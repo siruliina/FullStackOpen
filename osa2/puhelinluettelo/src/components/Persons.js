@@ -1,7 +1,8 @@
 import React from 'react'
 import Person from './Person';
 
-const Persons = ({persons, searchInput}) => {
+const Persons = ({persons, searchInput, removePerson}) => {
+
   return (
     <div>
       {
@@ -11,8 +12,8 @@ const Persons = ({persons, searchInput}) => {
           } else if (person.name.toLowerCase().includes(searchInput.toLowerCase())) {
             return person;
           }
-        }).map(person => {
-            return <Person key={person.name} person={person}/>
+        }).map((person, index) => {
+            return <div key={person.name}><Person person={person}/><button onClick={() => removePerson(person)}>delete</button></div>
         })
       }
     </div>
