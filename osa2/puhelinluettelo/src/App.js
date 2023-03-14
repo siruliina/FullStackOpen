@@ -3,6 +3,7 @@ import axios from 'axios';
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
+import Notification from './components/Notification';
 import personService from './services/persons';
 
 const App = () => {
@@ -10,6 +11,8 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [searchInput, setSearchInput] = useState('');
+  const [message, setMessage] = useState(null);
+  const [messageType, setMessageType] = useState(null)
 
   const handleAdd = (event) => {
     event.preventDefault()
@@ -24,7 +27,15 @@ const App = () => {
           .update(updatedPerson)
           .then(returnedPerson => {
             setPersons(persons.map(person => person.id !== returnedPerson.id ? person : returnedPerson))
+            setMessage(`The number of ${newName} has been updated`)
+            setMessageType('success')
           })
+          .catch(error => {
+            setMessage(`Information of ${newName} has already been removed from server`)
+            setMessageType('fail')
+          })
+        
+        setTimeout(() => {setMessage(null)}, 5000)
       }
     } else {
       const newPerson = {
@@ -36,9 +47,25 @@ const App = () => {
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
         })
+      setMessage(`${newName} has been added`)
+      setMessageType('success')
+      setTimeout(() => {setMessage(null)}, 5000)
     }
     setNewName('')
     setNewNumber('')
+  }
+
+  const removePerson = (person) => {
+    if (window.confirm(`Delete ${person.name} ?`)) {
+      personService
+        .remove(person.id)
+        .then(returnedPerson => {
+          setPersons(persons.filter(currentPerson => currentPerson.id !== person.id))
+        })
+      setMessage(`${person.name} has been deleted`)
+      setMessageType('success')
+      setTimeout(() => {setMessage(null)}, 5000)
+    }
   }
 
   const handleSearchChange = (event) => {
@@ -53,16 +80,6 @@ const App = () => {
     setNewNumber(event.target.value)
   } 
 
-  const removePerson = (person) => {
-    if (window.confirm(`Delete ${person.name} ?`)) {
-      personService
-        .remove(person.id)
-        .then(returnedPerson => {
-          setPersons(persons.filter(currentPerson => currentPerson.id !== person.id))
-        })
-    }
-  }
-
   useEffect(() => {
     axios
       .get('http://localhost:3001/persons')
@@ -73,6 +90,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
+      <Notification message={message} messageType={messageType} />
       <Filter searchInput={searchInput} handleSearchChange={handleSearchChange} />
       <h2>Add a new</h2>
       <PersonForm 
