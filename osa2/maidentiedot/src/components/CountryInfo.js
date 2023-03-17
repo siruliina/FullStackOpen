@@ -10,7 +10,9 @@ const CountryInfo = ({country}) => {
 
   useEffect(() => {
     const fetchWeather = async () => {
-      const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${api_key}&units=metric`);
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${api_key}&units=metric`
+      );
       const data = await response.json();
       setWeather(data)
       setWeatherReady(true)
