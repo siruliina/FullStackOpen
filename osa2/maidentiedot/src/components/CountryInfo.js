@@ -35,6 +35,7 @@ const CountryInfo = ({country}) => {
         <img alt={`flag of ${country.name.common}`} src={country.flags.png} /> 
         <h2>Weather in {`${country.capital[0]}`}</h2>
         <p>temperature {weather.main.temp} Celsius</p>
+        <img alt='weather icon' src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}/>
         <p>wind {weather.wind.speed} m/s</p>
       </div> :
         <p>Loading...</p>
