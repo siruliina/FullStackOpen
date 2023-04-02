@@ -31,7 +31,8 @@ const App = () => {
             setMessageType('success')
           })
           .catch(error => {
-            setMessage(`Information of ${newName} has already been removed from server`)
+            console.log(error.response.data.error)
+            setMessage(`${error.response.data.error}`)
             setMessageType('fail')
           })
         
@@ -46,9 +47,14 @@ const App = () => {
         .create(newPerson)
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
+          setMessage(`${newName} has been added`)
+          setMessageType('success')
         })
-      setMessage(`${newName} has been added`)
-      setMessageType('success')
+        .catch(error => {
+          console.log(error.response.data.error)
+          setMessage(`${error.response.data.error}`)
+          setMessageType('fail')
+        })
       setTimeout(() => {setMessage(null)}, 5000)
     }
     setNewName('')
