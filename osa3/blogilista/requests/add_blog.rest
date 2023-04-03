@@ -2,7 +2,8 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-    "author": "Jonah Gerrit",
-    "title": "How to manage?",
-    "url": "http://localhost:3001"
+    "author": "Liina Ruusu",
+    "title": "Taking care of yourself",
+    "url": "http://localhost:3002",
+    "likes": 2
 }
