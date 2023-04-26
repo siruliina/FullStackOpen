@@ -125,6 +125,37 @@ describe('deletion of a blog', () => {
   })
 })
 
+describe('editing of a blog', () => {
+  beforeEach(async () => {
+    await Blog.deleteMany({})
+
+    let blogObject = new Blog(helper.initialBlogs[0])
+    await blogObject.save()
+
+    blogObject = new Blog(helper.initialBlogs[1])
+    await blogObject.save()
+  })
+  
+  test('editing is successful', async () => {   
+    
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToEdit = blogsAtStart[0]
+
+    const editedBlog = {
+      title: 'Go To Statement Considered Harmful',
+      author: 'Edsger W. Dijkstra',
+      url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+      likes: 12
+    }
+
+    const response = await api.put(`/api/blogs/${blogToEdit.id}`)
+      .send(editedBlog)
+      .expect(200)
+
+    expect(response.body.likes).toBe(12)
+  })
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
