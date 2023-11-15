@@ -6,6 +6,7 @@ const api = supertest(app)
 const bcrypt = require('bcrypt')
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const jwt = require('jsonwebtoken')
 
 describe('when there is initially some blogs saved', () => {
   beforeEach(async () => {
@@ -33,6 +34,16 @@ describe('when there is initially some blogs saved', () => {
 })
 
 describe('addition of a new blog', () => {
+  beforeEach(async () => {
+    await Blog.deleteMany({})
+
+    let blogObject = new Blog(helper.initialBlogs[0])
+    await blogObject.save()
+
+    blogObject = new Blog(helper.initialBlogs[1])
+    await blogObject.save()
+  })
+  
   test('a valid blog can be added', async () => {
     const newBlog = {
       title: 'Canonical string reduction',
@@ -41,8 +52,17 @@ describe('addition of a new blog', () => {
       likes: 12
     }
 
-    await api
-      .post('/api/blogs')
+    const user = await User.findOne({})
+        const userForToken = {
+            username: user.username, 
+            id: user.id
+        }
+
+    const token = jwt.sign(userForToken, process.env.SECRET)
+
+    await api  
+      .post('/api/blogs') 
+      .set({ 'Authorization': `Bearer ${token}` })  
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -55,6 +75,23 @@ describe('addition of a new blog', () => {
     )
   })
 
+  test('blog can not be added without token', async () => {
+    const newBlog = {
+      title: 'Canonical string reduction',
+      author: 'Edsger W. Dijkstra',
+      url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
+      likes: 12
+    }
+  
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401)
+    
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+  })
+
   test('if there is no value given to field likes, it will be 0', async () => {
     const newBlog = {
       title: 'Canonical string reduction',
@@ -62,7 +99,17 @@ describe('addition of a new blog', () => {
       url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html'
     }
 
-    const response = await api.post('/api/blogs')
+    const user = await User.findOne({})
+        const userForToken = {
+            username: user.username, 
+            id: user.id
+        }
+
+    const token = jwt.sign(userForToken, process.env.SECRET)
+
+    const response = await api  
+      .post('/api/blogs') 
+      .set({ 'Authorization': `Bearer ${token}` })  
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -77,9 +124,20 @@ describe('addition of a new blog', () => {
       likes: 4
     }
 
-    await api.post('/api/blogs')
+    const user = await User.findOne({})
+        const userForToken = {
+            username: user.username, 
+            id: user.id
+        }
+
+    const token = jwt.sign(userForToken, process.env.SECRET)
+
+    await api  
+      .post('/api/blogs') 
+      .set({ 'Authorization': `Bearer ${token}` })  
       .send(newBlog)
       .expect(400)
+
   })
 
   test('bad request status code if no url is given', async () => {
@@ -89,7 +147,17 @@ describe('addition of a new blog', () => {
       likes: 4
     }
 
-    await api.post('/api/blogs')
+    const user = await User.findOne({})
+        const userForToken = {
+            username: user.username, 
+            id: user.id
+        }
+
+    const token = jwt.sign(userForToken, process.env.SECRET)
+
+    const response = await api  
+      .post('/api/blogs') 
+      .set({ 'Authorization': `Bearer ${token}` })  
       .send(newBlog)
       .expect(400)
   })
