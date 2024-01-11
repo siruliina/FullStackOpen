@@ -71,22 +71,38 @@ const App = () => {
     window.localStorage.removeItem('loggedBlogappUser')
   }
 
-  const addBlog = (blogObject) => {
-
-    blogFormRef.current.toggleVisibility()
-
-    console.log("creating a new blog:", blogObject.title)
+  const addBlog = async (blogObject) => {
+    blogFormRef.current.toggleVisibility();
   
-    blogService
-      .createBlog(blogObject)
-        .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
-        setMessage(`a new blog ${blogObject.title} by ${blogObject.author} was created`)
-        setType('success')
-      })
-    
-      setTimeout(() => {setMessage(null)}, 5000)      
-  }
+    try {
+      const returnedBlog = await blogService.createBlog(blogObject);
+  
+      returnedBlog.user = {
+        username: user.username,
+        name: user.name,
+        id: user.id,
+      };
+  
+      setBlogs(blogs.concat(returnedBlog));
+      setMessage(`A new blog ${blogObject.title} by ${blogObject.author} was created`);
+      setType('success');
+      
+      setUser({
+        ...user,
+      });
+  
+      setTimeout(() => {
+        setMessage(null);
+      }, 5000);
+    } catch (error) {
+      console.error(error);
+      setMessage('Failed to create a new blog');
+      setType('error');
+      setTimeout(() => {
+        setMessage(null);
+      }, 5000);
+    }
+  };
 
   if (user === null) {
     return (
