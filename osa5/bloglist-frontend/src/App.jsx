@@ -17,11 +17,11 @@ const App = () => {
 
   const blogFormRef = useRef()
 
-  useEffect(() => {
+  /*useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
     )  
-  }, [])
+  }, [])*/
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -31,6 +31,14 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
+
+  useEffect(() => {
+    blogService.getAll().then(blogs => {
+      setBlogs([...blogs].sort((a, b) => b.likes - a.likes));
+      //setBlogs( sortedBlogs )
+    }
+    )
+  }, [blogs]);
 
   const handleLogin = async (event) => {
     event.preventDefault()
