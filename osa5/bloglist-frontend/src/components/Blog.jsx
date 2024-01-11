@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import blogService from '../services/blogs';
 
-const Blog = ({ blog, user, setUser }) => {
+const Blog = ({ blog, user, setUser, getAllBlogs }) => {
   const [visible, setVisible] = useState(false);
   const [updatedBlog, setUpdatedBlog] = useState(blog);
 
@@ -33,6 +33,34 @@ const Blog = ({ blog, user, setUser }) => {
       setUser({
         ...user,
       });
+
+      getAllBlogs()
+      
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const deleteBlog = async () => {
+    try {
+      console.log(user.token)
+      if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+        const returnedBlog = await blogService.deleteBlog(blog.id, user.token)
+        
+        setUser({
+          ...user,
+        });
+      }
+      
+      getAllBlogs()
+      /*returnedBlog.user = {
+        username: user.username,
+        name: user.name,
+      };
+
+      setUpdatedBlog(null);*/
+
+      
       
     } catch (error) {
       console.error(error);
@@ -54,6 +82,13 @@ const Blog = ({ blog, user, setUser }) => {
             <button onClick={addLike}>like</button>
             <br />
             {updatedBlog.user.name}
+            <br />
+            {updatedBlog.user.username==user.username ? (
+              <button onClick={deleteBlog}>remove</button>
+            ) : 
+              null
+            }
+            
           </div>
         ) : null}
       </div>

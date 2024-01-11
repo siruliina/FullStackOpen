@@ -27,18 +27,24 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
+      console.log(user)
       setUser(user)
       blogService.setToken(user.token)
     }
   }, [])
 
   useEffect(() => {
-    blogService.getAll().then(blogs => {
-      setBlogs([...blogs].sort((a, b) => b.likes - a.likes));
-      //setBlogs( sortedBlogs )
+    getAllBlogs()
+  }, []);
+
+  const getAllBlogs = async () => {
+    try {
+      const allBlogs = await blogService.getAll()
+      setBlogs([...allBlogs].sort((a, b) => b.likes - a.likes))
+    } catch(error) {
+      console.log(error)
     }
-    )
-  }, [blogs]);
+  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -156,7 +162,7 @@ const App = () => {
       </Togglable>
       
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} user={user} setUser={setUser}/>
+        <Blog key={blog.id} blog={blog} user={user} setUser={setUser} getAllBlogs={getAllBlogs}/>
       )}
     </div>
   )
