@@ -1,9 +1,10 @@
-import { useState } from 'react';
-import blogService from '../services/blogs';
+import { useState } from 'react'
+import blogService from '../services/blogs'
+import PropTypes from 'prop-types'
 
 const Blog = ({ blog, user, setUser, getAllBlogs }) => {
-  const [visible, setVisible] = useState(false);
-  const [updatedBlog, setUpdatedBlog] = useState(blog);
+  const [visible, setVisible] = useState(false)
+  const [updatedBlog, setUpdatedBlog] = useState(blog)
 
 
   const blogStyle = {
@@ -12,7 +13,7 @@ const Blog = ({ blog, user, setUser, getAllBlogs }) => {
     border: 'solid',
     borderWidth: 1,
     marginBottom: 5,
-  };
+  }
 
   const addLike = async () => {
     try {
@@ -20,38 +21,38 @@ const Blog = ({ blog, user, setUser, getAllBlogs }) => {
       const returnedBlog = await blogService.updateBlog({
         ...updatedBlog,
         likes: updatedBlog.likes + 1,
-      });  
-      
+      })
+
       returnedBlog.user = {
         username: user.username,
         name: user.name,
         id: user.id,
-      };
+      }
 
-      setUpdatedBlog(returnedBlog);
+      setUpdatedBlog(returnedBlog)
 
       setUser({
         ...user,
-      });
+      })
 
       getAllBlogs()
-      
+
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
-  };
+  }
 
   const deleteBlog = async () => {
     try {
       console.log(user.token)
       if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
         const returnedBlog = await blogService.deleteBlog(blog.id, user.token)
-        
+
         setUser({
           ...user,
-        });
+        })
       }
-      
+
       getAllBlogs()
       /*returnedBlog.user = {
         username: user.username,
@@ -60,12 +61,10 @@ const Blog = ({ blog, user, setUser, getAllBlogs }) => {
 
       setUpdatedBlog(null);*/
 
-      
-      
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
-  };
+  }
 
   return (
     <div style={blogStyle}>
@@ -83,17 +82,23 @@ const Blog = ({ blog, user, setUser, getAllBlogs }) => {
             <br />
             {updatedBlog.user.name}
             <br />
-            {updatedBlog.user.username==user.username ? (
+            {updatedBlog.user.username===user.username ? (
               <button onClick={deleteBlog}>remove</button>
-            ) : 
+            ) :
               null
             }
-            
           </div>
         ) : null}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Blog;
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+  setUser: PropTypes.func.isRequired,
+  getAllBlogs: PropTypes.func.isRequired
+}
+
+export default Blog

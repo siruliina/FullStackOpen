@@ -8,7 +8,7 @@ import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('') 
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
@@ -20,7 +20,7 @@ const App = () => {
   /*useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])*/
 
   useEffect(() => {
@@ -35,7 +35,7 @@ const App = () => {
 
   useEffect(() => {
     getAllBlogs()
-  }, []);
+  }, [])
 
   const getAllBlogs = async () => {
     try {
@@ -56,7 +56,7 @@ const App = () => {
       })
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
-      ) 
+      )
 
       blogService.setToken(user.token)
 
@@ -78,7 +78,7 @@ const App = () => {
 
   const handleLogout = async(event) => {
     event.preventDefault()
-    console.log("logging out user:", user.username)
+    console.log('logging out user:', user.username)
     setMessage(`logged out successfully with ${user.username}`)
     setType('success')
     setTimeout(() => {setMessage(null)}, 5000)
@@ -86,37 +86,37 @@ const App = () => {
   }
 
   const addBlog = async (blogObject) => {
-    blogFormRef.current.toggleVisibility();
-  
+    blogFormRef.current.toggleVisibility()
+
     try {
-      const returnedBlog = await blogService.createBlog(blogObject);
-  
+      const returnedBlog = await blogService.createBlog(blogObject)
+
       returnedBlog.user = {
         username: user.username,
         name: user.name,
         id: user.id,
-      };
-  
-      setBlogs(blogs.concat(returnedBlog));
-      setMessage(`A new blog ${blogObject.title} by ${blogObject.author} was created`);
-      setType('success');
-      
+      }
+
+      setBlogs(blogs.concat(returnedBlog))
+      setMessage(`A new blog ${blogObject.title} by ${blogObject.author} was created`)
+      setType('success')
+
       setUser({
         ...user,
-      });
-  
+      })
+
       setTimeout(() => {
-        setMessage(null);
-      }, 5000);
+        setMessage(null)
+      }, 5000)
     } catch (error) {
-      console.error(error);
-      setMessage('Failed to create a new blog');
-      setType('error');
+      console.error(error)
+      setMessage('Failed to create a new blog')
+      setType('error')
       setTimeout(() => {
-        setMessage(null);
-      }, 5000);
+        setMessage(null)
+      }, 5000)
     }
-  };
+  }
 
   if (user === null) {
     return (
@@ -147,20 +147,20 @@ const App = () => {
       </div>
     )
   }
-  
+
   return (
     <div>
       <h2>blogs</h2>
       <Notification message={message} type={type} />
       <p>{user.name} logged in</p>
       <button onClick={handleLogout}>logout</button>
-      
+
       <Togglable buttonLabel='create new blog' ref={blogFormRef}>
         <BlogForm
           createBlog={addBlog}
         />
       </Togglable>
-      
+
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} user={user} setUser={setUser} getAllBlogs={getAllBlogs}/>
       )}
