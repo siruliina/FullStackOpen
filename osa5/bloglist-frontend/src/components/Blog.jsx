@@ -74,7 +74,7 @@ const Blog = ({ blog, user, setUser, getAllBlogs }) => {
           {visible ? 'hide' : 'view'}
         </button>
         {visible ? (
-          <div>
+          <div className='visibleTest'>
             <a href={updatedBlog.url}>{updatedBlog.url}</a>
             <br />
             {updatedBlog.likes}
