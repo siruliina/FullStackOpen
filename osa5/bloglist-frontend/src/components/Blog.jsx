@@ -2,7 +2,7 @@ import { useState } from 'react'
 import blogService from '../services/blogs'
 import PropTypes from 'prop-types'
 
-const Blog = ({ blog, user, setUser, getAllBlogs }) => {
+const Blog = ({ blog, user, setUser, getAllBlogs, addLike }) => {
   const [visible, setVisible] = useState(false)
   const [updatedBlog, setUpdatedBlog] = useState(blog)
 
@@ -13,33 +13,6 @@ const Blog = ({ blog, user, setUser, getAllBlogs }) => {
     border: 'solid',
     borderWidth: 1,
     marginBottom: 5,
-  }
-
-  const addLike = async () => {
-    try {
-      console.log(updatedBlog)
-      const returnedBlog = await blogService.updateBlog({
-        ...updatedBlog,
-        likes: updatedBlog.likes + 1,
-      })
-
-      returnedBlog.user = {
-        username: user.username,
-        name: user.name,
-        id: user.id,
-      }
-
-      setUpdatedBlog(returnedBlog)
-
-      setUser({
-        ...user,
-      })
-
-      getAllBlogs()
-
-    } catch (error) {
-      console.error(error)
-    }
   }
 
   const deleteBlog = async () => {
@@ -78,7 +51,7 @@ const Blog = ({ blog, user, setUser, getAllBlogs }) => {
             <a href={updatedBlog.url}>{updatedBlog.url}</a>
             <br />
             {updatedBlog.likes}
-            <button onClick={addLike}>like</button>
+            <button onClick={() => addLike(updatedBlog, setUpdatedBlog)}>like</button>
             <br />
             {updatedBlog.user.name}
             <br />

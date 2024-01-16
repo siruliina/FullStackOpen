@@ -5,7 +5,6 @@ import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 
 describe('<Blog />', () => {
-  let container
 
   test('renders content', () => {
     const blog = {
@@ -60,5 +59,39 @@ describe('<Blog />', () => {
     const div = container.querySelector('.visibleTest')
 
     expect(div).toHaveTextContent('Url 15likeName 1remove')
+  })
+
+  test('clicking the button calls event handler once', async () => {
+    const blog = {
+      title: 'Blog 1',
+      author: 'Author 1',
+      url: 'Url 1',
+      likes: 5,
+      user: {
+        username: 'Username 1',
+        name: 'Name 1'
+      }
+    }
+
+    const user = {
+      username: 'Username 1',
+      name: 'Name 1'
+    }
+
+    const mockHandler = jest.fn()
+
+    render(
+      <Blog blog={blog} user={user} addLike={mockHandler} />
+    )
+
+    const buttonUser = userEvent.setup()
+    const viewButton = screen.getByText('view')
+    await buttonUser.click(viewButton)
+
+    const likeButton = screen.getByText('like')
+    await buttonUser.click(likeButton)
+    await buttonUser.click(likeButton)
+
+    expect(mockHandler.mock.calls).toHaveLength(2)
   })
 })

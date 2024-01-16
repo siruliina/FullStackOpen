@@ -118,6 +118,33 @@ const App = () => {
     }
   }
 
+  const addLike = async (updatedBlog, setUpdatedBlog) => {
+    try {
+      console.log(updatedBlog)
+      const returnedBlog = await blogService.updateBlog({
+        ...updatedBlog,
+        likes: updatedBlog.likes + 1,
+      })
+
+      returnedBlog.user = {
+        username: user.username,
+        name: user.name,
+        id: user.id,
+      }
+
+      setUpdatedBlog(returnedBlog)
+
+      setUser({
+        ...user,
+      })
+
+      getAllBlogs()
+
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   if (user === null) {
     return (
       <div>
@@ -162,7 +189,7 @@ const App = () => {
       </Togglable>
 
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} user={user} setUser={setUser} getAllBlogs={getAllBlogs}/>
+        <Blog key={blog.id} blog={blog} user={user} setUser={setUser} getAllBlogs={getAllBlogs} addLike={addLike}/>
       )}
     </div>
   )
