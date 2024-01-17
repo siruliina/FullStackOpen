@@ -1,13 +1,13 @@
 describe('Blog app', function() {
   beforeEach(function() {
-    cy.request('POST', 'http://localhost:3003/api/testing/reset')
+    cy.request('POST', `${Cypress.env('BACKEND')}/testing/reset`)
     const user = {
       name: 'User 1',
       username: 'user1',
       password: 'user1_salasana'
     }
-    cy.request('POST', 'http://localhost:3003/api/users/', user)
-    cy.visit('http://localhost:5173')
+    cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)
+    cy.visit('')
   })
 
   it('Login form is shown', function() {
@@ -36,9 +36,7 @@ describe('Blog app', function() {
 
   describe('When logged in', function() {
     beforeEach(function() {
-      cy.get('#username').type('user1')
-      cy.get('#password').type('user1_salasana')
-      cy.get('#login-button').click()
+      cy.login({ username: 'user1', password: 'user1_salasana' })
     })
 
     it('A blog can be created', function() {
@@ -48,6 +46,34 @@ describe('Blog app', function() {
       cy.get('#url').type('Url 1')
       cy.contains('add').click()
       cy.contains('Blog 1 Author 1')
+    })
+
+    describe('blogs exist', function () {
+      beforeEach(function () {
+        cy.createBlog({
+          title: 'Blog 1',
+          author: 'Author 1',
+          url: 'Url 1'
+        })
+        cy.createBlog({
+          title: 'Blog 2',
+          author: 'Author 2',
+          url: 'Url 2'
+        })
+        cy.createBlog({
+          title: 'Blog 3',
+          author: 'Author 3',
+          url: 'Url 3'
+        })
+      })
+
+      it('A blog can be liked', function() {
+        cy.contains('Blog 2').parent().find('button').as('theButton')
+        cy.get('@theButton').click()
+        cy.get('@theButton').should('contain', 'hide')
+        cy.contains('like').click().parent().contains('1')
+        cy.contains('like').click().parent().contains('2')
+      })
     })
   })
 })
