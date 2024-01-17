@@ -18,7 +18,7 @@ test('clicking the button calls event handler once', async () => {
   const authorInput = container.querySelector('#author')
   const urlInput = container.querySelector('#url')
 
-  const sendButton = screen.getByText('create')
+  const sendButton = screen.getByText('add')
 
   await user.type(titleInput, 'Blog 1')
   await user.type(authorInput, 'Author 1')
