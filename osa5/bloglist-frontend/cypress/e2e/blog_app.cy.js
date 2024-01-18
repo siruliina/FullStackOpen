@@ -104,6 +104,27 @@ describe('Blog app', function() {
         cy.get('@theButton').should('contain', 'hide')
         cy.contains('Blog 2').parent().should('not.contain', 'remove')
       })
+
+      it('The blogs are ordered by the number of likes', function() {
+        cy.contains('Blog 2').parent().find('button').as('theButton')
+        cy.get('@theButton').click()
+        cy.get('@theButton').should('contain', 'hide')
+        cy.contains('like').click().parent().contains('1')
+        cy.contains('like').click().parent().contains('2')
+
+        cy.get('.blog').eq(0).should('contain', 'Blog 2')
+        cy.get('.blog').eq(1).should('contain', 'Blog 1')
+        cy.get('.blog').eq(2).should('contain', 'Blog 3')
+
+        cy.contains('Blog 3').parent().find('button').as('theButton')
+        cy.get('@theButton').click()
+        cy.get('@theButton').should('contain', 'hide')
+        cy.contains('Blog 3').parent().contains('like').click().parent().contains('1')
+
+        cy.get('.blog').eq(0).should('contain', 'Blog 2')
+        cy.get('.blog').eq(1).should('contain', 'Blog 3')
+        cy.get('.blog').eq(2).should('contain', 'Blog 1')
+      })
     })
   })
 })

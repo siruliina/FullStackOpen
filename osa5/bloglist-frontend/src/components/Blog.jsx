@@ -40,7 +40,7 @@ const Blog = ({ blog, user, setUser, getAllBlogs, addLike }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blog'>
       <div>
         {updatedBlog.title} {updatedBlog.author}
         <button onClick={() => setVisible(!visible)}>
