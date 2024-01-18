@@ -83,6 +83,7 @@ const App = () => {
     setType('success')
     setTimeout(() => {setMessage(null)}, 5000)
     window.localStorage.removeItem('loggedBlogappUser')
+    setUser(null)
   }
 
   const addBlog = async (blogObject) => {

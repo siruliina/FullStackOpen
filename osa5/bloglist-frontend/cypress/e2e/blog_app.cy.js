@@ -6,7 +6,13 @@ describe('Blog app', function() {
       username: 'user1',
       password: 'user1_salasana'
     }
+    const user2 = {
+      name: 'User 2',
+      username: 'user2',
+      password: 'user2_salasana'
+    }
     cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)
+    cy.request('POST', `${Cypress.env('BACKEND')}/users`, user2)
     cy.visit('')
   })
 
@@ -81,6 +87,22 @@ describe('Blog app', function() {
         cy.get('@theButton').should('contain', 'hide')
         cy.contains('remove').click()
         cy.get('html').should('not.contain', 'Blog 2')
+      })
+
+      it('Only the creator of the blog can see the delete button', function() {
+        cy.contains('Blog 2').parent().find('button').as('theButton')
+        cy.get('@theButton').click()
+        cy.get('@theButton').should('contain', 'hide')
+        cy.contains('Blog 2').parent().should('contain', 'remove')
+
+        cy.contains('logout').click()
+        cy.contains('Log in to application')
+        cy.login({ username: 'user2', password: 'user2_salasana' })
+
+        cy.contains('Blog 2').parent().find('button').as('theButton')
+        cy.get('@theButton').click()
+        cy.get('@theButton').should('contain', 'hide')
+        cy.contains('Blog 2').parent().should('not.contain', 'remove')
       })
     })
   })
