@@ -74,6 +74,14 @@ describe('Blog app', function() {
         cy.contains('like').click().parent().contains('1')
         cy.contains('like').click().parent().contains('2')
       })
+
+      it('The user that created a blog, can delete it', function() {
+        cy.contains('Blog 2').parent().find('button').as('theButton')
+        cy.get('@theButton').click()
+        cy.get('@theButton').should('contain', 'hide')
+        cy.contains('remove').click()
+        cy.get('html').should('not.contain', 'Blog 2')
+      })
     })
   })
 })
