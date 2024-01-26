@@ -3,7 +3,18 @@ import { useDispatch, useSelector } from 'react-redux'
 
 const AnecdoteList = () => {
     
-    const anecdotes = useSelector(state => state.sort((a, b) => b.votes - a.votes))
+    const anecdotes = useSelector(({ filter, anecdotes }) => {
+        if ( filter === '' ) {
+          return anecdotes.sort((a, b) => b.votes - a.votes)
+        }
+        else {
+            const filteredAnecdotes = anecdotes.filter((anecdote) =>
+                anecdote.content.includes(filter)
+            );
+            return filteredAnecdotes
+        }
+    })
+
     const dispatch = useDispatch()
 
     const vote = (id) => {
