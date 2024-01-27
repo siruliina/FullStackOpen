@@ -1,4 +1,7 @@
 /* eslint-disable no-case-declarations */
+
+import { createSlice } from '@reduxjs/toolkit'
+
 const anecdotesAtStart = [
   'If it hurts, do it more often',
   'Adding manpower to a late software project makes it later!',
@@ -20,7 +23,7 @@ const asObject = (anecdote) => {
 
 const initialState = anecdotesAtStart.map(asObject)
 
-const anecdoteReducer = (state = initialState, action) => {
+/*const anecdoteReducer = (state = initialState, action) => {
   console.log('state now: ', state)
   console.log('action', action)
 
@@ -60,4 +63,30 @@ export const addAnecdote = (content) => {
   }
 }
 
-export default anecdoteReducer
+export default anecdoteReducer */
+
+const anecdoteSlice = createSlice({
+  name: 'anecdotes',
+  initialState,
+  reducers: {
+    addAnecdote(state, action) {
+      const newAnecdote = asObject(action.payload)
+      return state.push(newAnecdote)
+    },
+    addVoteTo(state, action) {
+      const id = action.payload
+      const anecdoteToChange = state.find(n => n.id === id)
+      console.log(anecdoteToChange)
+      const changedAnecdote = {
+        ...anecdoteToChange,
+        votes: anecdoteToChange.votes + 1
+      }
+      return state.map(anecdote =>
+        anecdote.id !== id ? anecdote : changedAnecdote
+      )
+    }
+  }
+})
+
+export const { addAnecdote, addVoteTo } = anecdoteSlice.actions
+export default anecdoteSlice.reducer

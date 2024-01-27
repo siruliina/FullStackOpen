@@ -4,11 +4,12 @@ import { useDispatch, useSelector } from 'react-redux'
 const AnecdoteList = () => {
     
     const anecdotes = useSelector(({ filter, anecdotes }) => {
-        if ( filter === '' ) {
-          return anecdotes.sort((a, b) => b.votes - a.votes)
+        const sortedAnecdotes = [...anecdotes].sort((a, b) => b.votes - a.votes)
+        if ( filter === '' ) {         
+          return sortedAnecdotes
         }
         else {
-            const filteredAnecdotes = anecdotes.filter((anecdote) =>
+            const filteredAnecdotes = sortedAnecdotes.filter((anecdote) =>
                 anecdote.content.includes(filter)
             );
             return filteredAnecdotes
