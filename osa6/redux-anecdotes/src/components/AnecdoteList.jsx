@@ -11,8 +11,8 @@ const AnecdoteList = () => {
         }
         else {
             const filteredAnecdotes = sortedAnecdotes.filter((anecdote) =>
-                anecdote.content.includes(filter)
-            );
+                anecdote.content.toUpperCase().includes(filter.toUpperCase())
+            )
             return filteredAnecdotes
         }
     })
