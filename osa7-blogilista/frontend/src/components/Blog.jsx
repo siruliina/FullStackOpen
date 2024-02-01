@@ -6,7 +6,6 @@ const Blog = ({ blog, user, setUser, getAllBlogs, addLike }) => {
   const [visible, setVisible] = useState(false)
   const [updatedBlog, setUpdatedBlog] = useState(blog)
 
-
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -33,33 +32,32 @@ const Blog = ({ blog, user, setUser, getAllBlogs, addLike }) => {
       };
 
       setUpdatedBlog(null);*/
-
     } catch (error) {
       console.error(error)
     }
   }
 
   return (
-    <div style={blogStyle} className='blog'>
+    <div style={blogStyle} className="blog">
       <div>
         {updatedBlog.title} {updatedBlog.author}
         <button onClick={() => setVisible(!visible)}>
           {visible ? 'hide' : 'view'}
         </button>
         {visible ? (
-          <div className='visibleTest'>
+          <div className="visibleTest">
             <a href={updatedBlog.url}>{updatedBlog.url}</a>
             <br />
             {updatedBlog.likes}
-            <button onClick={() => addLike(updatedBlog, setUpdatedBlog)}>like</button>
+            <button onClick={() => addLike(updatedBlog, setUpdatedBlog)}>
+              like
+            </button>
             <br />
             {updatedBlog.user.name}
             <br />
-            {updatedBlog.user.username===user.username ? (
+            {updatedBlog.user.username === user.username ? (
               <button onClick={deleteBlog}>remove</button>
-            ) :
-              null
-            }
+            ) : null}
           </div>
         ) : null}
       </div>
@@ -71,7 +69,7 @@ Blog.propTypes = {
   blog: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
   setUser: PropTypes.func.isRequired,
-  getAllBlogs: PropTypes.func.isRequired
+  getAllBlogs: PropTypes.func.isRequired,
 }
 
 export default Blog

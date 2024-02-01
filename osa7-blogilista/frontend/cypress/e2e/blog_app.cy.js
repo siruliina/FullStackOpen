@@ -1,27 +1,27 @@
-describe('Blog app', function() {
-  beforeEach(function() {
+describe('Blog app', function () {
+  beforeEach(function () {
     cy.request('POST', `${Cypress.env('BACKEND')}/testing/reset`)
     const user = {
       name: 'User 1',
       username: 'user1',
-      password: 'user1_salasana'
+      password: 'user1_salasana',
     }
     const user2 = {
       name: 'User 2',
       username: 'user2',
-      password: 'user2_salasana'
+      password: 'user2_salasana',
     }
     cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)
     cy.request('POST', `${Cypress.env('BACKEND')}/users`, user2)
     cy.visit('')
   })
 
-  it('Login form is shown', function() {
+  it('Login form is shown', function () {
     cy.contains('Log in to application')
   })
 
-  describe('Login',function() {
-    it('succeeds with correct credentials', function() {
+  describe('Login', function () {
+    it('succeeds with correct credentials', function () {
       cy.get('#username').type('user1')
       cy.get('#password').type('user1_salasana')
       cy.get('#login-button').click()
@@ -30,7 +30,7 @@ describe('Blog app', function() {
       cy.contains('User 1 logged in')
     })
 
-    it('fails with wrong credentials', function() {
+    it('fails with wrong credentials', function () {
       cy.get('#username').type('user2')
       cy.get('#password').type('user1_salasana')
       cy.get('#login-button').click()
@@ -40,12 +40,12 @@ describe('Blog app', function() {
     })
   })
 
-  describe('When logged in', function() {
-    beforeEach(function() {
+  describe('When logged in', function () {
+    beforeEach(function () {
       cy.login({ username: 'user1', password: 'user1_salasana' })
     })
 
-    it('A blog can be created', function() {
+    it('A blog can be created', function () {
       cy.contains('create new blog').click()
       cy.get('#title').type('Blog 1')
       cy.get('#author').type('Author 1')
@@ -59,21 +59,21 @@ describe('Blog app', function() {
         cy.createBlog({
           title: 'Blog 1',
           author: 'Author 1',
-          url: 'Url 1'
+          url: 'Url 1',
         })
         cy.createBlog({
           title: 'Blog 2',
           author: 'Author 2',
-          url: 'Url 2'
+          url: 'Url 2',
         })
         cy.createBlog({
           title: 'Blog 3',
           author: 'Author 3',
-          url: 'Url 3'
+          url: 'Url 3',
         })
       })
 
-      it('A blog can be liked', function() {
+      it('A blog can be liked', function () {
         cy.contains('Blog 2').parent().find('button').as('theButton')
         cy.get('@theButton').click()
         cy.get('@theButton').should('contain', 'hide')
@@ -81,7 +81,7 @@ describe('Blog app', function() {
         cy.contains('like').click().parent().contains('2')
       })
 
-      it('The user that created a blog, can delete it', function() {
+      it('The user that created a blog, can delete it', function () {
         cy.contains('Blog 2').parent().find('button').as('theButton')
         cy.get('@theButton').click()
         cy.get('@theButton').should('contain', 'hide')
@@ -89,7 +89,7 @@ describe('Blog app', function() {
         cy.get('html').should('not.contain', 'Blog 2')
       })
 
-      it('Only the creator of the blog can see the delete button', function() {
+      it('Only the creator of the blog can see the delete button', function () {
         cy.contains('Blog 2').parent().find('button').as('theButton')
         cy.get('@theButton').click()
         cy.get('@theButton').should('contain', 'hide')
@@ -105,7 +105,7 @@ describe('Blog app', function() {
         cy.contains('Blog 2').parent().should('not.contain', 'remove')
       })
 
-      it('The blogs are ordered by the number of likes', function() {
+      it('The blogs are ordered by the number of likes', function () {
         cy.contains('Blog 2').parent().find('button').as('theButton')
         cy.get('@theButton').click()
         cy.get('@theButton').should('contain', 'hide')
@@ -119,7 +119,12 @@ describe('Blog app', function() {
         cy.contains('Blog 3').parent().find('button').as('theButton')
         cy.get('@theButton').click()
         cy.get('@theButton').should('contain', 'hide')
-        cy.contains('Blog 3').parent().contains('like').click().parent().contains('1')
+        cy.contains('Blog 3')
+          .parent()
+          .contains('like')
+          .click()
+          .parent()
+          .contains('1')
 
         cy.get('.blog').eq(0).should('contain', 'Blog 2')
         cy.get('.blog').eq(1).should('contain', 'Blog 3')

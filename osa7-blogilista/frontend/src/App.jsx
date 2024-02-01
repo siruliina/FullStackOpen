@@ -41,7 +41,7 @@ const App = () => {
     try {
       const allBlogs = await blogService.getAll()
       setBlogs([...allBlogs].sort((a, b) => b.likes - a.likes))
-    } catch(error) {
+    } catch (error) {
       console.log(error)
     }
   }
@@ -52,21 +52,21 @@ const App = () => {
 
     try {
       const user = await loginService.login({
-        username, password,
+        username,
+        password,
       })
-      window.localStorage.setItem(
-        'loggedBlogappUser', JSON.stringify(user)
-      )
+      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
 
       blogService.setToken(user.token)
 
       setUser(user)
       setMessage(`logged in successfully with ${username}`)
       setType('success')
-      setTimeout(() => {setMessage(null)}, 5000)
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
       setUsername('')
       setPassword('')
-
     } catch (exception) {
       setMessage('wrong credentials')
       setType('error')
@@ -76,12 +76,14 @@ const App = () => {
     }
   }
 
-  const handleLogout = async(event) => {
+  const handleLogout = async (event) => {
     event.preventDefault()
     console.log('logging out user:', user.username)
     setMessage(`logged out successfully with ${user.username}`)
     setType('success')
-    setTimeout(() => {setMessage(null)}, 5000)
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000)
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
   }
@@ -99,7 +101,9 @@ const App = () => {
       }
 
       setBlogs(blogs.concat(returnedBlog))
-      setMessage(`A new blog ${blogObject.title} by ${blogObject.author} was created`)
+      setMessage(
+        `A new blog ${blogObject.title} by ${blogObject.author} was created`
+      )
       setType('success')
 
       setUser({
@@ -140,7 +144,6 @@ const App = () => {
       })
 
       getAllBlogs()
-
     } catch (error) {
       console.error(error)
     }
@@ -172,7 +175,9 @@ const App = () => {
               id="password"
             />
           </div>
-          <button id="login-button" type="submit">login</button>
+          <button id="login-button" type="submit">
+            login
+          </button>
         </form>
       </div>
     )
@@ -185,15 +190,20 @@ const App = () => {
       <p>{user.name} logged in</p>
       <button onClick={handleLogout}>logout</button>
 
-      <Togglable buttonLabel='create new blog' ref={blogFormRef}>
-        <BlogForm
-          createBlog={addBlog}
-        />
+      <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+        <BlogForm createBlog={addBlog} />
       </Togglable>
 
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} user={user} setUser={setUser} getAllBlogs={getAllBlogs} addLike={addLike}/>
-      )}
+      {blogs.map((blog) => (
+        <Blog
+          key={blog.id}
+          blog={blog}
+          user={user}
+          setUser={setUser}
+          getAllBlogs={getAllBlogs}
+          addLike={addLike}
+        />
+      ))}
     </div>
   )
 }
