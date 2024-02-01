@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -7,16 +7,20 @@ import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import { setNotification } from './reducers/notificationReducer'
+import { initializeBlogs, createBlog } from './reducers/blogReducer'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
   const blogFormRef = useRef()
-
   const dispatch = useDispatch()
+
+  const blogs = useSelector(({ blogs }) => {
+    const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
+    return sortedBlogs
+  })
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -29,17 +33,8 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    getAllBlogs()
+    dispatch(initializeBlogs())
   }, [])
-
-  const getAllBlogs = async () => {
-    try {
-      const allBlogs = await blogService.getAll()
-      setBlogs([...allBlogs].sort((a, b) => b.likes - a.likes))
-    } catch (error) {
-      console.log(error)
-    }
-  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -55,7 +50,9 @@ const App = () => {
       blogService.setToken(user.token)
 
       setUser(user)
-      dispatch(setNotification(`logged in successfully with ${username}`, 'success', 5))
+      dispatch(
+        setNotification(`logged in successfully with ${username}`, 'success', 5)
+      )
       setUsername('')
       setPassword('')
     } catch (exception) {
@@ -66,16 +63,22 @@ const App = () => {
   const handleLogout = async (event) => {
     event.preventDefault()
     console.log('logging out user:', user.username)
-    dispatch(setNotification(`logged out successfully with ${user.username}`, 'success', 5))
+    dispatch(
+      setNotification(
+        `logged out successfully with ${user.username}`,
+        'success',
+        5
+      )
+    )
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
   }
 
-  const addBlog = async (blogObject) => {
+  /*const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
 
     try {
-      const returnedBlog = await blogService.createBlog(blogObject)
+      const returnedBlog = dispatch(createBlog(blogObject))
 
       returnedBlog.user = {
         username: user.username,
@@ -83,18 +86,23 @@ const App = () => {
         id: user.id,
       }
 
-      setBlogs(blogs.concat(returnedBlog))
-      dispatch(setNotification(`A new blog ${blogObject.title} by ${blogObject.author} was created`, 'success', 5))
+      //setBlogs(blogs.concat(returnedBlog))
+      dispatch(
+        setNotification(
+          `A new blog ${blogObject.title} by ${blogObject.author} was created`,
+          'success',
+          5
+        )
+      )
 
       setUser({
         ...user,
       })
-
     } catch (error) {
       console.error(error)
       dispatch(setNotification('Failed to create a new blog', 'error', 5))
     }
-  }
+  }*/
 
   const addLike = async (updatedBlog, setUpdatedBlog) => {
     try {
@@ -116,7 +124,7 @@ const App = () => {
         ...user,
       })
 
-      getAllBlogs()
+      //getAllBlogs()
     } catch (error) {
       console.error(error)
     }
@@ -164,7 +172,7 @@ const App = () => {
       <button onClick={handleLogout}>logout</button>
 
       <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-        <BlogForm createBlog={addBlog} />
+        <BlogForm />
       </Togglable>
 
       {blogs.map((blog) => (
@@ -173,7 +181,6 @@ const App = () => {
           blog={blog}
           user={user}
           setUser={setUser}
-          getAllBlogs={getAllBlogs}
           addLike={addLike}
         />
       ))}

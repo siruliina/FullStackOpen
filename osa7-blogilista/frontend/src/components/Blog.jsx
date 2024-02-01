@@ -2,7 +2,7 @@ import { useState } from 'react'
 import blogService from '../services/blogs'
 import PropTypes from 'prop-types'
 
-const Blog = ({ blog, user, setUser, getAllBlogs, addLike }) => {
+const Blog = ({ blog, user, setUser, addLike }) => {
   const [visible, setVisible] = useState(false)
   const [updatedBlog, setUpdatedBlog] = useState(blog)
 
@@ -25,7 +25,7 @@ const Blog = ({ blog, user, setUser, getAllBlogs, addLike }) => {
         })
       }
 
-      getAllBlogs()
+      //getAllBlogs()
       /*returnedBlog.user = {
         username: user.username,
         name: user.name,
@@ -68,8 +68,7 @@ const Blog = ({ blog, user, setUser, getAllBlogs, addLike }) => {
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
-  setUser: PropTypes.func.isRequired,
-  getAllBlogs: PropTypes.func.isRequired,
+  setUser: PropTypes.func.isRequired
 }
 
 export default Blog
