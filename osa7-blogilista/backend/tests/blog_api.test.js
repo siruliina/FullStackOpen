@@ -27,7 +27,7 @@ describe('when there is initially some blogs saved', () => {
 
   test('the blogs are identified with id', async () => {
     const response = await api.get('/api/blogs')
-    response.body.map(blog => {
+    response.body.map((blog) => {
       expect(blog.id).toBeDefined()
     })
   })
@@ -43,36 +43,34 @@ describe('addition of a new blog', () => {
     blogObject = new Blog(helper.initialBlogs[1])
     await blogObject.save()
   })
-  
+
   test('a valid blog can be added', async () => {
     const newBlog = {
       title: 'Canonical string reduction',
       author: 'Edsger W. Dijkstra',
       url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
-      likes: 12
+      likes: 12,
     }
 
     const user = await User.findOne({})
     const userForToken = {
-      username: user.username, 
-      id: user.id
+      username: user.username,
+      id: user.id,
     }
 
     const token = jwt.sign(userForToken, process.env.SECRET)
 
-    await api  
-      .post('/api/blogs') 
-      .set({ 'Authorization': `Bearer ${token}` })  
+    await api
+      .post('/api/blogs')
+      .set({ Authorization: `Bearer ${token}` })
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
     const blogsAtEnd = await helper.blogsInDb()
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
-    const titles = blogsAtEnd.map(n => n.title)
-    expect(titles).toContain(
-      'Canonical string reduction'
-    )
+    const titles = blogsAtEnd.map((n) => n.title)
+    expect(titles).toContain('Canonical string reduction')
   })
 
   test('blog can not be added without token', async () => {
@@ -80,14 +78,11 @@ describe('addition of a new blog', () => {
       title: 'Canonical string reduction',
       author: 'Edsger W. Dijkstra',
       url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
-      likes: 12
+      likes: 12,
     }
-  
-    await api
-      .post('/api/blogs')
-      .send(newBlog)
-      .expect(401)
-    
+
+    await api.post('/api/blogs').send(newBlog).expect(401)
+
     const blogsAtEnd = await helper.blogsInDb()
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
   })
@@ -96,20 +91,20 @@ describe('addition of a new blog', () => {
     const newBlog = {
       title: 'Canonical string reduction',
       author: 'Edsger W. Dijkstra',
-      url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html'
+      url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
     }
 
     const user = await User.findOne({})
     const userForToken = {
-      username: user.username, 
-      id: user.id
+      username: user.username,
+      id: user.id,
     }
 
     const token = jwt.sign(userForToken, process.env.SECRET)
 
-    const response = await api  
-      .post('/api/blogs') 
-      .set({ 'Authorization': `Bearer ${token}` })  
+    const response = await api
+      .post('/api/blogs')
+      .set({ Authorization: `Bearer ${token}` })
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -121,43 +116,42 @@ describe('addition of a new blog', () => {
     const newBlog = {
       author: 'Edsger W. Dijkstra',
       url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
-      likes: 4
+      likes: 4,
     }
 
     const user = await User.findOne({})
     const userForToken = {
-      username: user.username, 
-      id: user.id
+      username: user.username,
+      id: user.id,
     }
 
     const token = jwt.sign(userForToken, process.env.SECRET)
 
-    await api  
-      .post('/api/blogs') 
-      .set({ 'Authorization': `Bearer ${token}` })  
+    await api
+      .post('/api/blogs')
+      .set({ Authorization: `Bearer ${token}` })
       .send(newBlog)
       .expect(400)
-
   })
 
   test('bad request status code if no url is given', async () => {
     const newBlog = {
       title: 'Canonical string reduction',
       author: 'Edsger W. Dijkstra',
-      likes: 4
+      likes: 4,
     }
 
     const user = await User.findOne({})
     const userForToken = {
-      username: user.username, 
-      id: user.id
+      username: user.username,
+      id: user.id,
     }
 
     const token = jwt.sign(userForToken, process.env.SECRET)
 
-    const response = await api  
-      .post('/api/blogs') 
-      .set({ 'Authorization': `Bearer ${token}` })  
+    const response = await api
+      .post('/api/blogs')
+      .set({ Authorization: `Bearer ${token}` })
       .send(newBlog)
       .expect(400)
   })
@@ -173,23 +167,18 @@ describe('deletion of a blog', () => {
     blogObject = new Blog(helper.initialBlogs[1])
     await blogObject.save()
   })
-  
-  test('succeeds with status code 204 if id is valid', async () => {   
-    
+
+  test('succeeds with status code 204 if id is valid', async () => {
     const blogsAtStart = await helper.blogsInDb()
     const blogToDelete = blogsAtStart[0]
 
-    await api
-      .delete(`/api/blogs/${blogToDelete.id}`)
-      .expect(204)
+    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
 
-    expect(blogsAtEnd).toHaveLength(
-      helper.initialBlogs.length - 1
-    )
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
 
-    const titles = blogsAtEnd.map(r => r.title)
+    const titles = blogsAtEnd.map((r) => r.title)
 
     expect(titles).not.toContain(blogToDelete.title)
   })
@@ -205,9 +194,8 @@ describe('editing of a blog', () => {
     blogObject = new Blog(helper.initialBlogs[1])
     await blogObject.save()
   })
-  
-  test('editing is successful', async () => {   
-    
+
+  test('editing is successful', async () => {
     const blogsAtStart = await helper.blogsInDb()
     const blogToEdit = blogsAtStart[0]
 
@@ -215,10 +203,11 @@ describe('editing of a blog', () => {
       title: 'Go To Statement Considered Harmful',
       author: 'Edsger W. Dijkstra',
       url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-      likes: 12
+      likes: 12,
     }
 
-    const response = await api.put(`/api/blogs/${blogToEdit.id}`)
+    const response = await api
+      .put(`/api/blogs/${blogToEdit.id}`)
       .send(editedBlog)
       .expect(200)
 
@@ -254,7 +243,7 @@ describe('when there is initially one user at db', () => {
     const usersAtEnd = await helper.usersInDb()
     expect(usersAtEnd).toHaveLength(usersAtStart.length + 1)
 
-    const usernames = usersAtEnd.map(u => u.username)
+    const usernames = usersAtEnd.map((u) => u.username)
     expect(usernames).toContain(newUser.username)
   })
 
