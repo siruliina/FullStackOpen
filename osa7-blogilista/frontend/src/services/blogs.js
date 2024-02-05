@@ -35,4 +35,10 @@ const deleteBlog = async (blogId, userToken) => {
   return response.data
 }
 
-export default { getAll, createBlog, setToken, updateBlog, deleteBlog }
+export default {
+  getAll,
+  createBlog,
+  setToken,
+  updateBlog,
+  deleteBlog,
+}

@@ -33,9 +33,17 @@ export const createBlog = (content) => {
   }
 }
 
-export const voteBlog = (blog) => {
+export const likeBlog = (blog) => {
   return async (dispatch) => {
-    await blogService.updateBlog({ ...blog, votes: blog.votes + 1 })
+    await blogService.updateBlog({ ...blog, likes: blog.likes + 1 })
+    const blogs = await blogService.getAll()
+    dispatch(setBlogs(blogs))
+  }
+}
+
+export const deleteBlog = (id, userToken) => {
+  return async (dispatch) => {
+    await blogService.deleteBlog(id, userToken)
     const blogs = await blogService.getAll()
     dispatch(setBlogs(blogs))
   }

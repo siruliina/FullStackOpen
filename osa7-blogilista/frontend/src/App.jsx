@@ -74,62 +74,6 @@ const App = () => {
     setUser(null)
   }
 
-  /*const addBlog = async (blogObject) => {
-    blogFormRef.current.toggleVisibility()
-
-    try {
-      const returnedBlog = dispatch(createBlog(blogObject))
-
-      returnedBlog.user = {
-        username: user.username,
-        name: user.name,
-        id: user.id,
-      }
-
-      //setBlogs(blogs.concat(returnedBlog))
-      dispatch(
-        setNotification(
-          `A new blog ${blogObject.title} by ${blogObject.author} was created`,
-          'success',
-          5
-        )
-      )
-
-      setUser({
-        ...user,
-      })
-    } catch (error) {
-      console.error(error)
-      dispatch(setNotification('Failed to create a new blog', 'error', 5))
-    }
-  }*/
-
-  const addLike = async (updatedBlog, setUpdatedBlog) => {
-    try {
-      console.log(updatedBlog)
-      const returnedBlog = await blogService.updateBlog({
-        ...updatedBlog,
-        likes: updatedBlog.likes + 1,
-      })
-
-      returnedBlog.user = {
-        username: user.username,
-        name: user.name,
-        id: user.id,
-      }
-
-      setUpdatedBlog(returnedBlog)
-
-      setUser({
-        ...user,
-      })
-
-      //getAllBlogs()
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
   if (user === null) {
     return (
       <div>
@@ -176,13 +120,7 @@ const App = () => {
       </Togglable>
 
       {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          user={user}
-          setUser={setUser}
-          addLike={addLike}
-        />
+        <Blog key={blog.id} blog={blog} user={user} />
       ))}
     </div>
   )
