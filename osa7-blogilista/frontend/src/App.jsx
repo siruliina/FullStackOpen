@@ -16,6 +16,7 @@ import User from './components/User'
 import Blog from './components/Blog'
 
 import { checkUser, loginUser, logoutUser } from './reducers/loginReducer'
+import Menu from './components/Menu'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -37,11 +38,6 @@ const App = () => {
     dispatch(loginUser({ username, password }))
     setUsername('')
     setPassword('')
-  }
-
-  const handleLogout = async (event) => {
-    event.preventDefault()
-    dispatch(logoutUser(user))
   }
 
   if (user === null) {
@@ -81,16 +77,15 @@ const App = () => {
   return (
     <Router>
       <div>
+        <Menu user={user} />
         <h2>blogs</h2>
         <Notification />
-        <p>{user.name} logged in</p>
-        <button onClick={handleLogout}>logout</button>
       </div>
 
       <Routes>
         <Route path="/users" element={<Users />} />
         <Route path="/users/:id" element={<User />} />
-        <Route path="/blogs" element={<Blogs />} />
+        <Route path="/" element={<Blogs />} />
         <Route path="/blogs/:id" element={<Blog user={user} />} />
       </Routes>
     </Router>
