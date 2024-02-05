@@ -1,20 +1,23 @@
-import { useState } from 'react'
 import PropTypes from 'prop-types'
-import { useDispatch } from 'react-redux'
-import { likeBlog, deleteBlog } from '../reducers/blogReducer'
+import { useDispatch, useSelector } from 'react-redux'
+import { likeBlog, deleteBlog, initializeBlogs } from '../reducers/blogReducer'
+import { useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 
-const Blog = ({ blog, user }) => {
-  const [visible, setVisible] = useState(false)
+const Blog = ({ user }) => {
+  const blogs = useSelector(({ blogs }) => {
+    console.log('bloooogs', blogs)
+    return blogs
+  })
 
   const dispatch = useDispatch()
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  }
+  useEffect(() => {
+    dispatch(initializeBlogs())
+  }, [])
+
+  const id = useParams().id
+  const blog = blogs.find((n) => n.id === id)
 
   const removeBlog = async () => {
     try {
@@ -34,27 +37,24 @@ const Blog = ({ blog, user }) => {
       console.error(error)
     }
   }
-
+  if (!blog) {
+    return null
+  }
   return (
-    <div style={blogStyle} className="blog">
-      <div>
+    <div>
+      <h2>
         {blog.title} {blog.author}
-        <button onClick={() => setVisible(!visible)}>
-          {visible ? 'hide' : 'view'}
-        </button>
-        {visible ? (
-          <div className="visibleTest">
-            <a href={blog.url}>{blog.url}</a>
-            <br />
-            {blog.likes}
-            <button onClick={() => addLike(blog)}>like</button>
-            <br />
-            {blog.user.name}
-            <br />
-            {blog.user.username === user.username ? (
-              <button onClick={removeBlog}>remove</button>
-            ) : null}
-          </div>
+      </h2>
+      <div>
+        <a href={blog.url}>{blog.url}</a>
+        <br />
+        {blog.likes} likes
+        <button onClick={() => addLike(blog)}>like</button>
+        <br />
+        added by {blog.user.name}
+        <br />
+        {blog.user.username === user.username ? (
+          <button onClick={removeBlog}>remove</button>
         ) : null}
       </div>
     </div>
@@ -62,7 +62,6 @@ const Blog = ({ blog, user }) => {
 }
 
 Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
 }
 

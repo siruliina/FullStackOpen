@@ -13,6 +13,7 @@ import Notification from './components/Notification'
 import Users from './components/Users'
 import Blogs from './components/Blogs'
 import User from './components/User'
+import Blog from './components/Blog'
 
 import { checkUser, loginUser, logoutUser } from './reducers/loginReducer'
 
@@ -89,7 +90,8 @@ const App = () => {
       <Routes>
         <Route path="/users" element={<Users />} />
         <Route path="/users/:id" element={<User />} />
-        <Route path="/blogs" element={<Blogs user={user} />} />
+        <Route path="/blogs" element={<Blogs />} />
+        <Route path="/blogs/:id" element={<Blog user={user} />} />
       </Routes>
     </Router>
   )
