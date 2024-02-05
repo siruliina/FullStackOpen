@@ -9,27 +9,18 @@ import {
   useNavigate,
 } from 'react-router-dom'
 
-import Blog from './components/Blog'
 import Notification from './components/Notification'
-import BlogForm from './components/BlogForm'
-import Togglable from './components/Togglable'
 import Users from './components/Users'
 import Blogs from './components/Blogs'
+import User from './components/User'
 
-import { initializeBlogs } from './reducers/blogReducer'
 import { checkUser, loginUser, logoutUser } from './reducers/loginReducer'
 
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const blogFormRef = useRef()
   const dispatch = useDispatch()
-
-  const blogs = useSelector(({ blogs }) => {
-    const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
-    return sortedBlogs
-  })
 
   const user = useSelector(({ user }) => {
     return user
@@ -97,6 +88,7 @@ const App = () => {
 
       <Routes>
         <Route path="/users" element={<Users />} />
+        <Route path="/users/:id" element={<User />} />
         <Route path="/blogs" element={<Blogs user={user} />} />
       </Routes>
     </Router>
