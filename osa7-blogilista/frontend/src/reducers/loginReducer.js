@@ -1,14 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit'
+
 import loginService from '../services/login'
 import blogService from '../services/blogs'
-import { setNotification } from '../reducers/notificationReducer'
+
+import { setNotification } from './notificationReducer'
 
 const userSlice = createSlice({
   name: 'user',
   initialState: null,
   reducers: {
     setUser(state, action) {
-      console.log('in userReducer', action.payload)
       return action.payload
     },
   },
