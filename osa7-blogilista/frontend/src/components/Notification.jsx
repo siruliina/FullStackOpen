@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux'
+import { Alert } from 'react-bootstrap'
 
 const Notification = () => {
-
-  const notification = useSelector(({notification}) => {
+  const notification = useSelector(({ notification }) => {
     console.log(notification)
     return notification
   })
@@ -11,7 +11,7 @@ const Notification = () => {
     return null
   }
 
-  return <div className={notification.type}>{notification.notification}</div>
+  return <Alert variant={notification.type}>{notification.notification}</Alert>
 }
 
 export default Notification

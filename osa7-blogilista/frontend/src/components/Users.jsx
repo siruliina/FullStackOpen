@@ -3,6 +3,8 @@ import { initializeUsers } from '../reducers/usersReducer'
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
+import { Table } from 'react-bootstrap'
+
 const Users = () => {
   const users = useSelector(({ users }) => {
     console.log(users)
@@ -19,11 +21,12 @@ const Users = () => {
     return (
       <div>
         <h2>Users</h2>
-        <table>
+        <Table striped>
           <thead>
             <tr>
-              <th></th>
-              <th>blogs created</th>
+              <th>User</th>
+              <th>Username</th>
+              <th>Blogs Created</th>
             </tr>
           </thead>
           <tbody>
@@ -32,11 +35,12 @@ const Users = () => {
                 <td>
                   <Link to={`/users/${user.id}`}>{user.name}</Link>
                 </td>
+                <td>{user.username}</td>
                 <td>{user.blogs.length}</td>
               </tr>
             ))}
           </tbody>
-        </table>
+        </Table>
       </div>
     )
   }

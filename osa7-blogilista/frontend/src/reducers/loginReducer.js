@@ -25,15 +25,9 @@ export const loginUser = (credentials) => {
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
 
       blogService.setToken(user.token)
-      dispatch(
-        setNotification(
-          `logged in successfully with ${user.username}`,
-          'success',
-          5
-        )
-      )
+      dispatch(setNotification(`welcome ${user.username}!`, 'success', 5))
     } catch (exception) {
-      dispatch(setNotification('wrong credentials', 'error', 5))
+      dispatch(setNotification('wrong credentials', 'danger', 5))
     }
   }
 }
@@ -53,13 +47,7 @@ export const checkUser = () => {
 
 export const logoutUser = (user) => {
   return (dispatch) => {
-    dispatch(
-      setNotification(
-        `logged out successfully with ${user.username}`,
-        'success',
-        5
-      )
-    )
+    dispatch(setNotification(`see you soon ${user.username}!`, 'success', 5))
     window.localStorage.removeItem('loggedBlogappUser')
 
     dispatch(setUser(null))

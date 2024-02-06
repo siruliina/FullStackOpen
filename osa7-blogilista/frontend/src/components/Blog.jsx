@@ -7,7 +7,9 @@ import {
   addComment,
 } from '../reducers/blogReducer'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+
+import { Form, Button } from 'react-bootstrap'
 
 const Blog = ({ user }) => {
   const [visible, setVisible] = useState(false)
@@ -19,6 +21,7 @@ const Blog = ({ user }) => {
   })
 
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -33,6 +36,7 @@ const Blog = ({ user }) => {
       if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
         dispatch(deleteBlog(blog.id, user.token))
       }
+      navigate('/')
     } catch (error) {
       console.error(error)
     }
@@ -64,48 +68,73 @@ const Blog = ({ user }) => {
   return (
     <div>
       <h2>
-        {blog.title} {blog.author}
+        {blog.title} by {blog.author}
       </h2>
       <div>
         <a href={blog.url}>{blog.url}</a>
         <br />
         {blog.likes} likes
-        <button onClick={() => addLike(blog)}>like</button>
+        <Button
+          variant="primary"
+          style={{ margin: '15px' }}
+          onClick={() => addLike(blog)}
+        >
+          Like
+        </Button>
         <br />
-        added by {blog.user.name}
+        Added by {blog.user.name}
         <br />
         {blog.user.username === user.username ? (
-          <button onClick={removeBlog}>remove</button>
+          <Button
+            variant="secondary"
+            style={{ marginTop: '15px' }}
+            onClick={removeBlog}
+          >
+            Remove
+          </Button>
         ) : null}
-        <h2>comments</h2>
-        <button
-          onClick={(event) => {
-            commentBlog(event, `haven't read this yet`)
-          }}
-        >
-          haven't read this yet
-        </button>
-        <button onClick={() => setVisible(true)}>add comment</button>
-        {visible ? (
-          <form onSubmit={(event) => commentBlog(event, input)}>
-            <div>
-              comment
-              <input
-                type="text"
-                value={input}
-                name="Comment"
-                onChange={(event) => setInput(event.target.value)}
-                id="comment"
-              />
-            </div>
-            <button type="submit">add</button>
-          </form>
-        ) : null}
-        <ul>
-          {blog.comments.map((comment) => (
-            <li key={comment.id}>{comment.comment}</li>
-          ))}
-        </ul>
+        <div style={{ marginTop: '30px' }}>
+          <h3>Comments</h3>
+          <Button variant="primary" onClick={() => setVisible(true)}>
+            Add comment
+          </Button>
+          <Button
+            variant="secondary"
+            style={{ margin: '15px' }}
+            onClick={(event) => {
+              commentBlog(event, `haven't read this yet`)
+            }}
+          >
+            Haven't read this yet
+          </Button>
+          {visible ? (
+            <Form onSubmit={(event) => commentBlog(event, input)}>
+              <Form.Group>
+                <Form.Label>Comment</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={input}
+                  name="Comment"
+                  onChange={(event) => setInput(event.target.value)}
+                  id="comment"
+                />
+              </Form.Group>
+              <Button type="submit">Add</Button>
+              <Button
+                variant="secondary"
+                style={{ margin: '15px' }}
+                onClick={() => setVisible(false)}
+              >
+                Cancel
+              </Button>
+            </Form>
+          ) : null}
+          <ul>
+            {blog.comments.map((comment) => (
+              <li key={comment.id}>{comment.comment}</li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   )

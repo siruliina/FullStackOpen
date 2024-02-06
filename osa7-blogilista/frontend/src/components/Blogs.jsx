@@ -7,6 +7,8 @@ import { initializeBlogs } from '../reducers/blogReducer'
 import Togglable from './Togglable'
 import BlogForm from './BlogForm'
 
+import { Table } from 'react-bootstrap'
+
 const Blogs = () => {
   const dispatch = useDispatch()
 
@@ -17,32 +19,33 @@ const Blogs = () => {
     return sortedBlogs
   })
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  }
-
   useEffect(() => {
     dispatch(initializeBlogs())
   }, [])
 
   return (
     <div>
-      <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+      <Togglable buttonLabel="Create new blog" ref={blogFormRef}>
         <BlogForm />
       </Togglable>
-      <div>
-        {blogs.map((blog) => (
-          <div key={blog.id} style={blogStyle}>
-            <Link to={`/blogs/${blog.id}`}>
-              {blog.title} by {blog.author}
-            </Link>
-          </div>
-        ))}
-      </div>
+      <Table striped>
+        <thead>
+          <tr>
+            <th>Blog</th>
+            <th>Author</th>
+          </tr>
+        </thead>
+        <tbody>
+          {blogs.map((blog) => (
+            <tr key={blog.id}>
+              <td>
+                <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+              </td>
+              <td>{blog.author}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
     </div>
   )
 }

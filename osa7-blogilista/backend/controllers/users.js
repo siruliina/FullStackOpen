@@ -34,6 +34,7 @@ usersRouter.get('/', async (request, response) => {
     author: 1,
     url: 1,
     likes: 1,
+    comments: 1,
   })
   response.setHeader('Content-Type', 'application/json')
   response.send(JSON.stringify(users, null, 4))
