@@ -23,9 +23,9 @@ commentsRouter.post('/:id/comments', async (request, response) => {
   })
 
   const commentAdded = await comment.save()
-  blog.comments = blog.comments.concat(commentAdded._id)
+  blog.comments = blog.comments.concat(commentAdded)
   await blog.save()
-  response.status(201), json(commentAdded)
+  response.status(201).json(commentAdded)
 })
 
 module.exports = commentsRouter
