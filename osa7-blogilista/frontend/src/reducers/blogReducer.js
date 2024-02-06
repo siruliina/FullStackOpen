@@ -51,4 +51,13 @@ export const deleteBlog = (id, userToken) => {
   }
 }
 
+export const addComment = (id, comment) => {
+  return async (dispatch) => {
+    await blogService.addComment(id, comment)
+    const blogs = await blogService.getAll()
+    dispatch(setBlogs(blogs))
+    dispatch(initializeUsers())
+  }
+}
+
 export default blogSlice.reducer
