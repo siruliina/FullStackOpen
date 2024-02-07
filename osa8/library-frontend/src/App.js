@@ -25,7 +25,7 @@ const App = () => {
 
       <Notification errorMessage={errorMessage} />
 
-      <Authors show={page === "authors"} setError={notify} />
+      <Authors show={page === "authors"} />
 
       <Books show={page === "books"} />
 

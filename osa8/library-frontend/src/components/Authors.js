@@ -1,21 +1,18 @@
 import { useQuery, useMutation } from "@apollo/client";
 import { useState } from "react";
+import Select from "react-select";
 import { ALL_AUTHORS, EDIT_AUTHOR } from "../queries";
 
 const Authors = (props) => {
-  const result = useQuery(ALL_AUTHORS);
+  const queryData = useQuery(ALL_AUTHORS);
   const [editAuthor] = useMutation(EDIT_AUTHOR, {
     refetchQueries: [{ query: ALL_AUTHORS }],
-    onError: (error) => {
-      const messages = error.graphQLErrors.map((e) => e.message).join("\n");
-      props.setError(messages);
-    },
   });
 
-  const [name, setName] = useState("");
+  const [name, setName] = useState(null);
   const [year, setYear] = useState("");
 
-  if (result.loading) {
+  if (queryData.loading) {
     return <div>loading...</div>;
   }
 
@@ -23,7 +20,12 @@ const Authors = (props) => {
     return null;
   }
 
-  const authors = result.data.allAuthors;
+  const authors = queryData.data.allAuthors;
+
+  const options = authors.map((author) => ({
+    value: author.name,
+    label: author.name,
+  }));
 
   const submit = (event) => {
     event.preventDefault();
@@ -32,7 +34,7 @@ const Authors = (props) => {
 
     console.log("editing author birthyear...");
 
-    editAuthor({ variables: { name, setBornTo: yearInt } });
+    editAuthor({ variables: { name: name.value, setBornTo: yearInt } });
 
     setName("");
     setYear("");
@@ -58,14 +60,9 @@ const Authors = (props) => {
         </tbody>
       </table>
       <h3>Set birthyear</h3>
+
       <form onSubmit={submit}>
-        <div>
-          name
-          <input
-            value={name}
-            onChange={({ target }) => setName(target.value)}
-          />
-        </div>
+        <Select defaultValue={name} onChange={setName} options={options} />
         <div>
           birthyear
           <input
