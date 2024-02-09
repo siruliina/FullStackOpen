@@ -3,7 +3,7 @@ import { ALL_BOOKS } from "../queries";
 import { useState } from "react";
 
 const Books = (props) => {
-  const [selectedGenres, setSelectedGenres] = useState([]);
+  const [selectedGenre, setSelectedGenre] = useState(null);
   const result = useQuery(ALL_BOOKS);
 
   if (result.loading) {
@@ -16,22 +16,11 @@ const Books = (props) => {
 
   const books = result.data.allBooks;
 
-  const toggleGenre = (genre) => {
-    if (selectedGenres.includes(genre)) {
-      setSelectedGenres(selectedGenres.filter((g) => g !== genre));
-    } else {
-      setSelectedGenres([...selectedGenres, genre]);
-    }
-  };
-
   const genres = [...new Set(books.flatMap((book) => book.genres))];
 
-  const filteredBooks =
-    selectedGenres.length > 0
-      ? books.filter((book) =>
-          selectedGenres.every((genre) => book.genres.includes(genre))
-        )
-      : books;
+  const filteredBooks = selectedGenre
+    ? books.filter((book) => book.genres.includes(selectedGenre))
+    : books;
 
   return (
     <div>
@@ -40,13 +29,13 @@ const Books = (props) => {
         {genres.map((genre) => (
           <button
             key={genre}
-            onClick={() => toggleGenre(genre)}
-            className={selectedGenres.includes(genre) ? "selected" : ""}
+            onClick={() => setSelectedGenre(genre)}
+            className={selectedGenre === genre ? "selected" : ""}
           >
             {genre}
           </button>
         ))}
-        <button onClick={() => setSelectedGenres([])}>Clear selection</button>
+        <button onClick={() => setSelectedGenre(null)}>all genres</button>
       </div>
 
       <table>

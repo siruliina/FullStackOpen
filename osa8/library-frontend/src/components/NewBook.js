@@ -1,65 +1,86 @@
-import { useQuery } from "@apollo/client";
-import { ALL_BOOKS } from "../queries";
 import { useState } from "react";
+import { useMutation } from "@apollo/client";
+import { ALL_BOOKS, ADD_BOOK, ALL_AUTHORS } from "../queries";
 
-const Books = (props) => {
-  const [selectedGenre, setSelectedGenre] = useState(null);
-  const result = useQuery(ALL_BOOKS);
+const NewBook = (props) => {
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [published, setPublished] = useState("");
+  const [genre, setGenre] = useState("");
+  const [genres, setGenres] = useState([]);
 
-  if (result.loading) {
-    return <div>loading...</div>;
-  }
+  const [addBook] = useMutation(ADD_BOOK, {
+    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
+    onError: (error) => {
+      const messages = error.graphQLErrors.map((e) => e.message).join("\n");
+      props.setError(messages);
+    },
+  });
 
   if (!props.show) {
     return null;
   }
 
-  const books = result.data.allBooks;
+  const submit = async (event) => {
+    event.preventDefault();
 
-  const toggleGenre = (genre) => {
-    setSelectedGenre(selectedGenre === genre ? null : genre);
+    const publishedInt = parseInt(published);
+
+    console.log("add book...");
+
+    addBook({ variables: { title, author, published: publishedInt, genres } });
+
+    setTitle("");
+    setPublished("");
+    setAuthor("");
+    setGenres([]);
+    setGenre("");
   };
 
-  const genres = [...new Set(books.flatMap((book) => book.genres))];
-
-  const filteredBooks = selectedGenre
-    ? books.filter((book) => book.genres.includes(selectedGenre))
-    : books;
+  const addGenre = () => {
+    setGenres(genres.concat(genre));
+    setGenre("");
+  };
 
   return (
     <div>
-      <h2>books</h2>
-      <div>
-        {genres.map((genre) => (
-          <button
-            key={genre}
-            onClick={() => toggleGenre(genre)}
-            className={selectedGenre === genre ? "selected" : ""}
-          >
-            {genre}
+      <form onSubmit={submit}>
+        <div>
+          title
+          <input
+            value={title}
+            onChange={({ target }) => setTitle(target.value)}
+          />
+        </div>
+        <div>
+          author
+          <input
+            value={author}
+            onChange={({ target }) => setAuthor(target.value)}
+          />
+        </div>
+        <div>
+          published
+          <input
+            type="number"
+            value={published}
+            onChange={({ target }) => setPublished(target.value)}
+          />
+        </div>
+        <div>
+          <input
+            value={genre}
+            onChange={({ target }) => setGenre(target.value)}
+          />
+          <button onClick={addGenre} type="button">
+            add genre
           </button>
-        ))}
-        <button onClick={() => setSelectedGenre(null)}>Clear selection</button>
-      </div>
-
-      <table>
-        <tbody>
-          <tr>
-            <th></th>
-            <th>author</th>
-            <th>published</th>
-          </tr>
-          {filteredBooks.map((a) => (
-            <tr key={a.title}>
-              <td>{a.title}</td>
-              <td>{a.author.name}</td>
-              <td>{a.published}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+        </div>
+        <div>genres: {genres.join(" ")}</div>
+        <button type="submit">create book</button>
+      </form>
     </div>
   );
 };
 
-export default Books;
+export default NewBook;
