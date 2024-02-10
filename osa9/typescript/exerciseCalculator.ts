@@ -13,8 +13,8 @@ const calculateExercises = (hours: number[], target: number): Result => {
   let trainingDays = 0;
   let averageTime = 0;
   let reachedTarget = false;
-  let rating: number;
-  let description;
+  let ratingNum = 0;
+  let description = "";
 
   for (let i = 0; i < days; i++) {
     if (hours[i] > 0) {
@@ -33,13 +33,13 @@ const calculateExercises = (hours: number[], target: number): Result => {
   console.log(targetMetPercentage);
 
   if (targetMetPercentage < 50) {
-    rating = 1;
+    ratingNum = 1;
     description = "the amount of exercise was far from target amount...";
   } else if (targetMetPercentage < 100) {
-    rating = 2;
+    ratingNum = 2;
     description = "not too bad but could be better";
   } else if (targetMetPercentage >= 100) {
-    rating = 3;
+    ratingNum = 3;
     description = "you met your goals, way to go!";
   }
 
@@ -47,7 +47,7 @@ const calculateExercises = (hours: number[], target: number): Result => {
     periodLength: days,
     trainingDays: trainingDays,
     success: reachedTarget,
-    rating: rating,
+    rating: ratingNum,
     ratingDescription: description,
     target: target,
     average: averageTime,
