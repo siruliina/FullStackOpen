@@ -4,7 +4,9 @@ import Select from "react-select";
 import { ALL_AUTHORS, EDIT_AUTHOR } from "../queries";
 
 const Authors = (props) => {
-  const queryData = useQuery(ALL_AUTHORS);
+  const queryData = useQuery(ALL_AUTHORS, {
+    fetchPolicy: "no-cache",
+  });
   const [editAuthor] = useMutation(EDIT_AUTHOR, {
     refetchQueries: [{ query: ALL_AUTHORS }],
   });
