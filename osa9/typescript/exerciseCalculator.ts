@@ -54,4 +54,29 @@ const calculateExercises = (hours: number[], target: number): Result => {
   };
 };
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 4));
+const parseArgs = (
+  args: Array<string>
+): { target: number; hours: number[] } => {
+  if (args.length < 4) throw new Error("Not enough arguments");
+
+  const target = Number(args[2]);
+  const hours = args.slice(3).map((arg) => {
+    const parsed = Number(arg);
+    if (isNaN(parsed)) {
+      throw new Error("Provided values must be numbers");
+    }
+    return parsed;
+  });
+
+  return {
+    target: target,
+    hours: hours,
+  };
+};
+
+try {
+  const { target, hours } = parseArgs(process.argv);
+  console.log(calculateExercises(hours, target));
+} catch (e) {
+  console.log("Error:", e.message);
+}
