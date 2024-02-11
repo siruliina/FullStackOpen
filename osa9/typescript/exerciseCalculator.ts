@@ -79,11 +79,10 @@ export const parseArgs = (
   };
 };
 
-/*
+
 try {
   const { target, hours } = parseArgs(process.argv);
-  return calculateExercises(hours, target);
+  console.log(calculateExercises(hours, target));
 } catch (e) {
   console.log("Error:", e);
 }
-*/
