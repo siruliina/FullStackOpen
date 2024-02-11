@@ -29,7 +29,7 @@ const calculateExercises = (hours: number[], target: number): Result => {
     reachedTarget = true;
   }
 
-  let targetMetPercentage = (averageTime / target) * 100;
+  const targetMetPercentage = (averageTime / target) * 100;
   console.log(targetMetPercentage);
 
   if (targetMetPercentage < 50) {
@@ -78,5 +78,5 @@ try {
   const { target, hours } = parseArgs(process.argv);
   console.log(calculateExercises(hours, target));
 } catch (e) {
-  console.log("Error:", e.message);
+  console.log("Error:", e);
 }
