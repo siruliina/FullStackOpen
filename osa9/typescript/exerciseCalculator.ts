@@ -1,4 +1,9 @@
-interface Result {
+export interface ExerciseInput {
+  daily_exercises: number[];
+  target: number;
+}
+
+export interface Result {
   periodLength: number;
   trainingDays: number;
   success: boolean;
@@ -8,8 +13,8 @@ interface Result {
   average: number;
 }
 
-const calculateExercises = (hours: number[], target: number): Result => {
-  const days = hours.length;
+export const calculateExercises = (daily_exercises: number[], target: number): Result => {
+  const days = daily_exercises.length;
   let trainingDays = 0;
   let averageTime = 0;
   let reachedTarget = false;
@@ -17,10 +22,10 @@ const calculateExercises = (hours: number[], target: number): Result => {
   let description = "";
 
   for (let i = 0; i < days; i++) {
-    if (hours[i] > 0) {
+    if (daily_exercises[i] > 0) {
       trainingDays += 1;
     }
-    averageTime += hours[i];
+    averageTime += daily_exercises[i];
   }
 
   averageTime /= days;
@@ -54,7 +59,7 @@ const calculateExercises = (hours: number[], target: number): Result => {
   };
 };
 
-const parseArgs = (
+export const parseArgs = (
   args: Array<string>
 ): { target: number; hours: number[] } => {
   if (args.length < 4) throw new Error("Not enough arguments");
@@ -74,9 +79,11 @@ const parseArgs = (
   };
 };
 
+/*
 try {
   const { target, hours } = parseArgs(process.argv);
-  console.log(calculateExercises(hours, target));
+  return calculateExercises(hours, target);
 } catch (e) {
   console.log("Error:", e);
 }
+*/
