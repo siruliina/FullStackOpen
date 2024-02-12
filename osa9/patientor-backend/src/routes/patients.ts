@@ -2,10 +2,28 @@ import express from 'express';
 import patientService from '../services/patientService';
 import toNewPatient from '../utils';
 
+
 const router = express.Router();
 
 router.get('/', (_req, res) => {
   res.send(patientService.getNonSensitiveData());
+});
+
+router.get('/:id', (req, res) => {
+  try {
+    const patientId = req.params.id;
+
+    const patient = patientService.getPatientById(patientId);
+
+    if (!patient) {
+      return res.status(404).json({ error: 'Patient not found' });
+    }
+    
+    return res.json(patient);
+  } catch (error) {
+    console.error('Error fetching patient data:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 router.post('/', (req, res) => {
