@@ -12,27 +12,39 @@ const EntryForm = ({ entries, setEntries }: EntryProps): JSX.Element => {
   const [visibility, setVisibility] = useState<Visibility>(Visibility.Great);
   const [weather, setWeather] = useState<Weather>(Weather.Sunny);
   const [comment, setComment] = useState('');
+  const [error, setError] = useState('');
 
-  const entryCreation = (event: React.SyntheticEvent) => {
+  const entryCreation = async (event: React.SyntheticEvent) => {
     event.preventDefault();
-    createEntry({
-      date: date,
-      visibility: visibility,
-      weather: weather,
-      comment: comment,
-    }).then((data) => {
-      setEntries(entries.concat(data));
-    });
+  
+    try {
+      const data = await createEntry({
+        date: date,
+        visibility: visibility,
+        weather: weather,
+        comment: comment,
+      });
 
+      if (data) {
+        setEntries(entries.concat(data));
+      } 
+    } catch (error) {
+      setError(`${error}`);
+      setTimeout(() => {
+        setError('');
+      }, 5000);
+    }
     setDate('');
     setVisibility(Visibility.Great);
     setWeather(Weather.Sunny);
     setComment('');
   };
+  
 
   return (
     <div>
       <h2>Add new entry</h2>
+      {error? <div style={{color: 'red'}}>{error}</div> : null}
       <form onSubmit={entryCreation}>
         <div>
           Date
