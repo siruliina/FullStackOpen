@@ -48,15 +48,29 @@ const EntryForm = ({ entries, setEntries }: EntryProps): JSX.Element => {
       <form onSubmit={entryCreation}>
         <div>
           Date
-          <input value={date} onChange={({ target }) => setDate(target.value)} />
+          <input type="date" value={date} onChange={({target}) => setDate(target.value)} />
         </div>
         <div>
           Visibility
-          <input value={visibility} onChange={({ target }) => setVisibility(target.value as Visibility)} />
+          great <input type="radio" name="visibility" onChange={() => setVisibility('great' as Visibility)} />
+
+          good <input type="radio" name="visibility" onChange={() => setVisibility('good' as Visibility)}/>
+
+          ok <input type="radio" name="visibility"onChange={() => setVisibility('ok' as Visibility)}/>
+
+          poor <input type="radio" name="visibility" onChange={() => setVisibility('poor' as Visibility)}/>
         </div>
         <div>
           Weather
-          <input value={weather} onChange={({ target }) => setWeather(target.value as Weather)} />
+          sunny <input type="radio" name="weather" onChange={() => setWeather('sunny' as Weather)} />
+
+          rainy <input type="radio" name="weather" onChange={() => setWeather('rainy' as Weather)} />
+
+          cloudy <input type="radio" name="weather" onChange={() => setWeather('cloudy' as Weather)} />
+
+          stormy <input type="radio" name="weather" onChange={() => setWeather('stormy' as Weather)} />
+
+          windy <input type="radio" name="weather" onChange={() => setWeather('windy' as Weather)} />
         </div>
         <div>
           Comment
