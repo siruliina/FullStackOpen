@@ -34,7 +34,8 @@ const addPatient = (patient: NewPatient): Patient => {
 
   const newPatient = {
     id: uuid(),
-    ...patient
+    ...patient,
+    entries: []
   };
 
   patients.push(newPatient);
